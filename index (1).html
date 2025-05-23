@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Bukidnon - The Land of the Mountain People</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for animations and overrides */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.5s;
+        }
+        
+        .delay-2 {
+            animation-delay: 1s;
+        }
+        
+        .delay-3 {
+            animation-delay: 1.5s;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+        
+        .bg-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('<!-- PASTE HERO IMAGE URL HERE -->');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Login/Register Modal (shown by default) -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md animate__animated animate__fadeIn">
+            <!-- Logo Placeholder - Replace with your Bukidnon logo -->
+            <div class="flex justify-center mb-6">
+                <img id="bukidnonLogo" src="<!-- PASTE YOUR BUKIDNON LOGO URL HERE -->" alt="Bukidnon Logo" class="h-24">
+            </div>
+            
+            <!-- Login Form (default) -->
+            <div id="loginForm">
+                <h2 class="text-2xl font-bold text-center text-green-800 mb-6">Login to Explore Bukidnon</h2>
+                <form id="login">
+                    <div class="mb-4">
+                        <label for="loginUsername" class="block text-gray-700 mb-2">Username</label>
+                        <input type="text" id="loginUsername" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="loginPassword" class="block text-gray-700 mb-2">Password</label>
+                        <input type="password" id="loginPassword" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">Login</button>
+                </form>
+                <p class="text-center mt-4 text-gray-600">Don't have an account? <button id="showRegister" class="text-green-600 font-medium">Register here</button></p>
+            </div>
+            
+            <!-- Register Form (hidden by default) -->
+            <div id="registerForm" class="hidden">
+                <h2 class="text-2xl font-bold text-center text-green-800 mb-6">Create an Account</h2>
+                <form id="register">
+                    <div class="mb-4">
+                        <label for="registerUsername" class="block text-gray-700 mb-2">Username</label>
+                        <input type="text" id="registerUsername" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="registerPassword" class="block text-gray-700 mb-2">Password</label>
+                        <input type="password" id="registerPassword" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="confirmPassword" class="block text-gray-700 mb-2">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">Register</button>
+                </form>
+                <p class="text-center mt-4 text-gray-600">Already have an account? <button id="showLogin" class="text-green-600 font-medium">Login here</button></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Website Content (hidden until login) -->
+    <div id="mainContent" class="hidden">
+        <!-- Navigation Bar -->
+        <nav class="bg-white shadow-lg fixed w-full z-40">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <img id="navLogo" src="<!-- PASTE YOUR BUKIDNON LOGO URL HERE -->" alt="Bukidnon Logo" class="h-10">
+                    </div>
+                    
+                    <!-- Navigation Links -->
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-center space-x-4">
+                            <a href="#home" class="text-green-800 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                            <a href="#attractions" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Attractions</a>
+                            <a href="#culture" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Culture</a>
+                            <a href="#festivals" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Festivals</a>
+                            <a href="#food" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Food</a>
+                            <a href="#contact" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Contact</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Logout Button -->
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 flex items-center">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="pt-16 bg-hero min-h-screen flex items-center justify-center text-white">
+            <div class="container mx-auto px-6 text-center animate__animated animate__fadeIn">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 animate__animated animate__fadeInDown">Welcome to Bukidnon</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate__animated animate__fadeIn animate__delay-1s">The Land of the Mountain People - Where Nature and Culture Blend in Perfect Harmony</p>
+                <a href="#attractions" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition duration-300 inline-block animate__animated animate__fadeIn animate__delay-2s">Explore Now</a>
+            </div>
+        </section>
+
+        <!-- Attractions Section -->
+        <section id="attractions" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-16">Natural Attractions</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Mount Kitanglad -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition duration-500 transform hover:scale-105">
+                        <img src="<!-- PASTE MOUNT KITANGLAD IMAGE URL HERE -->" alt="Mount Kitanglad" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Mount Kitanglad</h3>
+                            <p class="text-gray-600 mb-4">A majestic mountain range and natural park that's home to diverse flora and fauna, including the Philippine eagle. It's a UNESCO-declared ASEAN Heritage Park and a favorite among mountaineers.</p>
+                            <div class="flex items-center text-yellow-500 mb-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-gray-600 ml-2">4.9 (128 reviews)</span>
+                            </div>
+                            <button class="mt-4 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">Hiking Destination</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dahilayan Adventure Park -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition duration-500 transform hover:scale-105">
+                        <img src="<!-- PASTE DAHILAYAN ADVENTURE PARK IMAGE URL HERE -->" alt="Dahilayan Adventure Park" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Dahilayan Adventure Park</h3>
+                            <p class="text-gray-600 mb-4">Thrill-seekers paradise featuring Asia's longest dual zipline, a roller coaster zipline, and other adrenaline-pumping activities amidst the cool mountain air and pine tree scenery.</p>
+                            <div class="flex items-center text-yellow-500 mb-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="text-gray-600 ml-2">4.7 (95 reviews)</span>
+                            </div>
+                            <button class="mt-4 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">Adventure Spot</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lake Apo -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition duration-500 transform hover:scale-105">
+                        <img src="<!-- PASTE LAKE APO IMAGE URL HERE -->" alt="Lake Apo" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Lake Apo</h3>
+                            <p class="text-gray-600 mb-4">A serene volcanic crater lake surrounded by lush vegetation, perfect for kayaking, swimming, or simply enjoying the peaceful natural surroundings. The lake is sacred to the indigenous Talaandig people.</p>
+                            <div class="flex items-center text-yellow-500 mb-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-gray-600 ml-2">4.8 (76 reviews)</span>
+                            </div>
+                            <button class="mt-4 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">Nature Retreat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Culture Section -->
+        <section id="culture" class="py-20 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-16">Rich Cultural Heritage</h2>
+                
+                <div class="flex flex-col lg:flex-row items-center gap-10 mb-16">
+                    <div class="lg:w-1/2 animate__animated animate__fadeInLeft">
+                        <img src="<!-- PASTE INDIGENOUS PEOPLE IMAGE URL HERE -->" alt="Indigenous People of Bukidnon" class="rounded-lg shadow-xl w-full">
+                    </div>
+                    <div class="lg:w-1/2 animate__animated animate__fadeInRight">
+                        <h3 class="text-3xl font-bold text-gray-800 mb-4">The Indigenous Tribes</h3>
+                        <p class="text-gray-600 mb-4">Bukidnon is home to seven indigenous tribes: the Bukidnon, Higaonon, Talaandig, Manobo, Matigsalug, Tigwahanon, and Umayamnon. Each tribe has its own distinct traditions, languages, and cultural practices.</p>
+                        <p class="text-gray-600">These indigenous communities maintain a deep spiritual connection with nature, practicing sustainable agriculture and preserving ancestral knowledge of herbal medicine and craftsmanship.</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-10">
+                    <div class="lg:w-1/2 animate__animated animate__fadeInRight">
+                        <img src="<!-- PASTE TRADITIONAL HOUSE IMAGE URL HERE -->" alt="Traditional Bukidnon House" class="rounded-lg shadow-xl w-full">
+                    </div>
+                    <div class="lg:w-1/2 animate__animated animate__fadeInLeft">
+                        <h3 class="text-3xl font-bold text-gray-800 mb-4">Traditional Architecture</h3>
+                        <p class="text-gray-600 mb-4">The traditional houses of Bukidnon, called "balay," are built using indigenous materials like bamboo, rattan, and cogon grass. These structures are elevated on stilts, reflecting the people's adaptation to the mountainous terrain.</p>
+                        <p class="text-gray-600">The design incorporates cultural symbols and is built without nails, using intricate weaving and knotting techniques passed down through generations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Festivals Section -->
+        <section id="festivals" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-16">Colorful Festivals</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Kaamulan Festival -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition duration-500 transform hover:scale-105">
+                        <img src="<!-- PASTE KAAMULAN FESTIVAL IMAGE URL HERE -->" alt="Kaamulan Festival" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Kaamulan Festival</h3>
+                            <p class="text-gray-600 mb-4">Bukidnon's most famous festival held from February to March, celebrating the culture and traditions of the seven indigenous tribes. The festival features street dancing, ethnic music, traditional games, and a grand tribal gathering.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">Cultural Showcase</span>
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">Street Dancing</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Tribal Rituals</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pineapple Festival -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover transition duration-500 transform hover:scale-105">
+                        <img src="<!-- PASTE PINEAPPLE FESTIVAL IMAGE URL HERE -->" alt="Pineapple Festival" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Pineapple Festival</h3>
+                            <p class="text-gray-600 mb-4">Celebrated in June in the town of Don Carlos, this festival honors Bukidnon's thriving pineapple industry. The event features agricultural exhibits, cooking competitions, cultural shows, and the coronation of the Pineapple Festival Queen.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">Agricultural Show</span>
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">Food Festival</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Cultural Parade</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Section -->
+        <section id="food" class="py-20 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-16">Delicious Cuisine</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Binaki -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300">
+                        <img src="<!-- PASTE BINAKI IMAGE URL HERE -->" alt="Binaki" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Binaki</h3>
+                            <p class="text-gray-600 mb-3">A sweet corn cake wrapped in banana leaves, this Bukidnon delicacy is steamed to perfection, resulting in a moist and flavorful treat that's perfect for snacks or dessert.</p>
+                            <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Sweet Corn Cake</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Sinuglaw -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300">
+                        <img src="<!-- PASTE SINUGLAW IMAGE URL HERE -->" alt="Sinuglaw" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Sinuglaw</h3>
+                            <p class="text-gray-600 mb-3">A fusion dish combining grilled pork (sinugba) and ceviche-style fish (kinilaw), representing the blending of land and sea flavors that's unique to Bukidnon's culinary tradition.</p>
+                            <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Pork & Fish Dish</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Pinikpikan -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300">
+                        <img src="<!-- PASTE PINIKPIKAN IMAGE URL HERE -->" alt="Pinikpikan" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Pinikpikan</h3>
+                            <p class="text-gray-600 mb-3">A traditional chicken soup dish prepared with a unique method that involves lightly beating the chicken before cooking, believed to enhance the flavor and texture of the meat.</p>
+                            <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Chicken Soup</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-16">Plan Your Visit</h2>
+                
+                <div class="max-w-4xl mx-auto bg-gray-100 rounded-xl shadow-lg overflow-hidden">
+                    <div class="md:flex">
+                        <div class="md:w-1/2 p-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
+                            <div class="mb-6">
+                                <div class="flex items-start mb-4">
+                                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                                        <i class="fas fa-map-marker-alt text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Address</h4>
+                                        <p class="text-gray-600">Bukidnon Provincial Capitol, Malaybalay City, Bukidnon, Philippines</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start mb-4">
+                                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                                        <i class="fas fa-phone-alt text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Phone</h4>
+                                        <p class="text-gray-600">+63 (088) 813-3636</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                                        <i class="fas fa-envelope text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Email</h4>
+                                        <p class="text-gray-600">tourism@bukidnon.gov.ph</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Follow Us</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition duration-300">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition duration-300">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition duration-300">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-1/2 bg-green-600 p-8 text-white">
+                            <h3 class="text-2xl font-bold mb-6">Send Us a Message</h3>
+                            <form>
+                                <div class="mb-4">
+                                    <label for="name" class="block mb-2">Your Name</label>
+                                    <input type="text" id="name" class="w-full px-4 py-2 rounded-lg bg-green-700 border border-green-500 text-white placeholder-green-300 focus:outline-none focus:ring-2 focus:ring-green-300">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="email" class="block mb-2">Email Address</label>
+                                    <input type="email" id="email" class="w-full px-4 py-2 rounded-lg bg-green-700 border border-green-500 text-white placeholder-green-300 focus:outline-none focus:ring-2 focus:ring-green-300">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="message" class="block mb-2">Message</label>
+                                    <textarea id="message" rows="4" class="w-full px-4 py-2 rounded-lg bg-green-700 border border-green-500 text-white placeholder-green-300 focus:outline-none focus:ring-2 focus:ring-green-300"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-white text-green-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300 font-semibold">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-green-800 text-white py-12">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <img id="footerLogo" src="<!-- PASTE YOUR BUKIDNON LOGO URL HERE -->" alt="Bukidnon Logo" class="h-12 mb-4">
+                        <p class="max-w-md">Bukidnon - The Land of the Mountain People. A province blessed with natural wonders, rich culture, and warm hospitality.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Explore</h4>
+                            <ul class="space-y-2">
+                                <li><a href="#attractions" class="hover:text-green-300 transition duration-300">Attractions</a></li>
+                                <li><a href="#culture" class="hover:text-green-300 transition duration-300">Culture</a></li>
+                                <li><a href="#festivals" class="hover:text-green-300 transition duration-300">Festivals</a></li>
+                                <li><a href="#food" class="hover:text-green-300 transition duration-300">Food</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Information</h4>
+                            <ul class="space-y-2">
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">About Bukidnon</a></li>
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Travel Guide</a></li>
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Accommodations</a></li>
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Transportation</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Legal</h4>
+                            <ul class="space-y-2">
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Privacy Policy</a></li>
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Terms of Service</a></li>
+                                <li><a href="#" class="hover:text-green-300 transition duration-300">Cookie Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-green-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                    <p>&copy; 2023 Explore Bukidnon. All rights reserved.</p>
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" class="hover:text-green-300 transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-green-300 transition duration-300"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="hover:text-green-300 transition duration-300"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="hover:text-green-300 transition duration-300"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Authentication System
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            }
+            
+            // Toggle between login and register forms
+            document.getElementById('showRegister').addEventListener('click', function() {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+            });
+            
+            document.getElementById('showLogin').addEventListener('click', function() {
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
+            });
+            
+            // Login form submission
+            document.getElementById('login').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // Simple validation (in a real app, you'd verify against a database)
+                if (username && password) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    document.getElementById('authModal').classList.add('hidden');
+                    document.getElementById('mainContent').classList.remove('hidden');
+                    
+                    // Show welcome notification
+                    alert('Welcome back, ' + username + '! Enjoy exploring Bukidnon.');
+                } else {
+                    alert('Please enter both username and password.');
+                }
+            });
+            
+            // Register form submission
+            document.getElementById('register').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('registerUsername').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Simple validation
+                if (!username || !password || !confirmPassword) {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+                
+                // In a real app, you'd send this data to your backend
+                localStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('authModal').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                
+                // Show welcome notification
+                alert('Account created successfully! Welcome to Bukidnon, ' + username + '.');
+            });
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('isLoggedIn');
+                document.getElementById('mainContent').classList.add('hidden');
+                document.getElementById('authModal').classList.remove('hidden');
+                
+                // Reset forms
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('login').reset();
+                document.getElementById('register').reset();
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Animation on scroll
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.animate__animated');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        const animationClass = element.getAttribute('data-animation');
+                        element.classList.add(animationClass);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on page load
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Kolay123/bukidnon" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
